@@ -106,6 +106,52 @@ public class FindAllByAttributesIT extends ClientITBase {
         }
         
     }
+
+    @Test
+    public void testFindSubmissionWithNoSource() throws Exception {
+        URI user = URI.create("http://example.com/user");
+        Submission submission1 = random(Submission.class, 1);
+        submission1.setSource(null);
+        submission1.setMetadata("foo");
+        submission1.setUser(user);
+        URI expectedUri1 = client.createResource(submission1);
+
+        Submission submission2 = random(Submission.class, 1);
+        submission2.setSource(null);
+        submission2.setMetadata("foo");
+        submission2.setUser(user);
+        URI expectedUri2 = client.createResource(submission2);
+
+        Submission submission3 = random(Submission.class, 1);
+        submission2.setSource(Submission.Source.OTHER);
+        submission2.setMetadata("foo");
+        submission2.setUser(user);
+        URI expectedUri3 = client.createResource(submission3);
+
+        try {
+            attempt(30, () -> {
+                assertEquals(expectedUri1.getPath(),
+                        client.findByAttribute(Submission.class, "@id", expectedUri1).getPath());
+                assertEquals(expectedUri2.getPath(),
+                        client.findByAttribute(Submission.class, "@id", expectedUri2).getPath());
+                assertEquals(expectedUri3.getPath(),
+                        client.findByAttribute(Submission.class, "@id", expectedUri3).getPath());
+            });
+
+            Set<URI> uris = client.findAllByAttributes(Submission.class, new HashMap<String, Object>() {{
+                put("metadata", "foo");
+                put("source", null);
+                put("user", user);
+            }});
+
+            assertEquals(2, uris.size());
+            assertTrue(uris.stream().anyMatch(uri -> uri.getPath().equals(expectedUri1.getPath())));
+            assertTrue(uris.stream().anyMatch(uri -> uri.getPath().equals(expectedUri2.getPath())));
+        } finally {
+            client.deleteResource(expectedUri1);
+            client.deleteResource(expectedUri2);
+        }
+    }
     
     /**
      * Adds 10 records, then retrieves them in chunks using limit and offet to verify they are working
