@@ -128,6 +128,9 @@ public class FindAllByAttributesIT extends ClientITBase {
         submission2.setUser(user);
         URI expectedUri3 = client.createResource(submission3);
 
+        Deposit deposit1 = random(Deposit.class, 1);
+        URI expectedUri4 = client.createResource(deposit1);
+
         try {
             attempt(30, () -> {
                 assertEquals(expectedUri1.getPath(),
@@ -136,6 +139,8 @@ public class FindAllByAttributesIT extends ClientITBase {
                         client.findByAttribute(Submission.class, "@id", expectedUri2).getPath());
                 assertEquals(expectedUri3.getPath(),
                         client.findByAttribute(Submission.class, "@id", expectedUri3).getPath());
+                assertEquals(expectedUri4.getPath(),
+                        client.findByAttribute(Deposit.class, "@id", expectedUri4).getPath());
             });
 
             Set<URI> uris = client.findAllByAttributes(Submission.class, new HashMap<String, Object>() {{
@@ -144,12 +149,26 @@ public class FindAllByAttributesIT extends ClientITBase {
                 put("user", user);
             }});
 
+            // Only the two Submissions with null sources should be found.  The other Submission has a non-null source,
+            // and the other resource is a Deposit.
+            assertEquals(2, uris.size());
+            assertTrue(uris.stream().anyMatch(uri -> uri.getPath().equals(expectedUri1.getPath())));
+            assertTrue(uris.stream().anyMatch(uri -> uri.getPath().equals(expectedUri2.getPath())));
+
+            uris = client.findAllByAttributes(Submission.class, new HashMap<String, Object>() {{
+                put("source", null);
+            }});
+
+            // Only two Submissions with null sources should be found. The other Submission has a non-null source, and
+            // the other resource is a Deposit.
             assertEquals(2, uris.size());
             assertTrue(uris.stream().anyMatch(uri -> uri.getPath().equals(expectedUri1.getPath())));
             assertTrue(uris.stream().anyMatch(uri -> uri.getPath().equals(expectedUri2.getPath())));
         } finally {
             client.deleteResource(expectedUri1);
             client.deleteResource(expectedUri2);
+            client.deleteResource(expectedUri3);
+            client.deleteResource(expectedUri4);
         }
     }
     
