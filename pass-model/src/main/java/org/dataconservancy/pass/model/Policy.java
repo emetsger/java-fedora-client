@@ -32,7 +32,6 @@ public class Policy extends PassEntity {
     /** 
      * String type name, specifically used to set "@type" in JSON serialization
      */
-    @JsonProperty("@type")
     private String type = PassEntityType.POLICY.getName();
     
     /** 
