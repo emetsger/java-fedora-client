@@ -27,11 +27,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Funder extends PassEntity {
 
     /** 
-     * String type name, specifically used to set "@type" in JSON serialization
-     */
-    private String type = PassEntityType.FUNDER.getName();
-    
-    /** 
      * Funder name 
      */
     private String name;
@@ -51,13 +46,7 @@ public class Funder extends PassEntity {
      * PASS and a local system. In the case of JHU this is the key assigned in COEUS
      */
     private String localKey;
-    
-    @Override
-    public String getType() {
-        return type;
-    }
 
-    
     /**
      * @return the name
      */
@@ -131,7 +120,6 @@ public class Funder extends PassEntity {
 
         Funder that = (Funder) o;
 
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (policy != null ? !policy.equals(that.policy) : that.policy != null) return false;
@@ -143,7 +131,6 @@ public class Funder extends PassEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (url != null ? url.hashCode() : 0);
         result = 31 * result + (policy != null ? policy.hashCode() : 0);

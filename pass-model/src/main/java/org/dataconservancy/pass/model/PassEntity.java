@@ -17,6 +17,7 @@ package org.dataconservancy.pass.model;
 
 import java.net.URI;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,7 +47,6 @@ public abstract class PassEntity {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("@context")
     protected String context = null;
-    
 
     /**
      * Retrieves the unique URI representing the resource.  
@@ -66,13 +66,6 @@ public abstract class PassEntity {
     public void setId(URI id) {
         this.id = id;
     }
-
-    /**
-     * Returns the entity type as String. This is used in JSON to identify the object type.
-     * The type string becomes a "@type:" property when converted to JSON.
-     * @return the type
-     */
-    public abstract String getType();
 
     /**
      * @return the context

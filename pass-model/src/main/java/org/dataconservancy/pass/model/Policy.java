@@ -28,11 +28,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public class Policy extends PassEntity {
-
-    /** 
-     * String type name, specifically used to set "@type" in JSON serialization
-     */
-    private String type = PassEntityType.POLICY.getName();
     
     /** 
      * Title of policy e.g. "NIH Public Access Policy" 
@@ -64,13 +59,6 @@ public class Policy extends PassEntity {
      */
     private URI funder;
 
-    
-    @Override
-    public String getType() {
-        return type;
-    }
-    
-    
     /**
      * @return the title
      */
@@ -175,7 +163,6 @@ public class Policy extends PassEntity {
 
         Policy that = (Policy) o;
 
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (policyUrl != null ? !policyUrl.equals(that.policyUrl) : that.policyUrl != null) return false;
@@ -189,7 +176,6 @@ public class Policy extends PassEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (policyUrl != null ? policyUrl.hashCode() : 0);

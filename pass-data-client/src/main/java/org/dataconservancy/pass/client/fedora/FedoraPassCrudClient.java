@@ -93,7 +93,7 @@ public class FedoraPassCrudClient {
         URI newId = null;
         
         try {            
-            container = new URI(FedoraConfig.getContainer(modelObj.getType()));
+            container = new URI(FedoraConfig.getContainer(modelObj.getClass().getSimpleName()));
         } catch (URISyntaxException e) {
             throw new RuntimeException("Container name could not be converted to a URI", e);
         }

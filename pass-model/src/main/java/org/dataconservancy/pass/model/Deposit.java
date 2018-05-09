@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -29,11 +30,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public class Deposit extends PassEntity {
-
-    /** 
-     * String type name, specifically used to set "@type" in JSON serialization
-     */
-    private String type = PassEntityType.DEPOSIT.getName();
     
     /** 
      * A URL or some kind of reference that can be dereferenced, entity body parsed, and used to determine the status of Deposit
@@ -105,13 +101,6 @@ public class Deposit extends PassEntity {
         }
         
     }
-
-    
-    @Override
-    public String getType() {
-        return type;
-    }
-    
     
     /**
      * @return the deposit status
@@ -201,7 +190,6 @@ public class Deposit extends PassEntity {
 
         Deposit that = (Deposit) o;
 
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (depositStatusRef != null ? !depositStatusRef.equals(that.depositStatusRef) : that.depositStatusRef != null) return false;
         if (depositStatus != null ? !depositStatus.equals(that.depositStatus) : that.depositStatus != null) return false;
         if (submission != null ? !submission.equals(that.submission) : that.submission != null) return false;
@@ -214,7 +202,6 @@ public class Deposit extends PassEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (depositStatusRef != null ? depositStatusRef.hashCode() : 0);
         result = 31 * result + (depositStatus != null ? depositStatus.hashCode() : 0);
         result = 31 * result + (submission != null ? submission.hashCode() : 0);

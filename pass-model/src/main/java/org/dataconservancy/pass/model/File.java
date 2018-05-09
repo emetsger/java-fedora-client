@@ -28,11 +28,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Karen Hanson
  */
 public class File extends PassEntity {
-
-    /** 
-     * String type name, specifically used to set "@type" in JSON serialization
-     */
-    private String type = PassEntityType.FILE.getName();
     
     /** 
      * Name of file, defaults to filesystem.name 
@@ -99,14 +94,6 @@ public class File extends PassEntity {
             return this.value;
         }
     }
-    
-    
-
-    @Override
-    public String getType() {
-        return type;
-    }
-        
     
     /**
      * @return the name
@@ -212,7 +199,6 @@ public class File extends PassEntity {
 
         File that = (File) o;
 
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
@@ -226,7 +212,6 @@ public class File extends PassEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (uri != null ? uri.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);

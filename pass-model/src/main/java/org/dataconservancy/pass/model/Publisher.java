@@ -23,11 +23,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public class Publisher extends PassEntity {
-
-    /** 
-     * String type name, specifically used to set "@type" in JSON serialization
-     */
-    private String type = PassEntityType.PUBLISHER.getName();
     
     /** 
      * Name of publisher 
@@ -39,12 +34,6 @@ public class Publisher extends PassEntity {
      * published article to PMC. If so, whether it requires additional processing fee.  
      */
     private PmcParticipation pmcParticipation;
-
-    
-    @Override
-    public String getType() {
-        return type;
-    }
         
     /**
      * @return the name
@@ -86,7 +75,6 @@ public class Publisher extends PassEntity {
 
         Publisher that = (Publisher) o;
 
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (pmcParticipation != null ? !pmcParticipation.equals(that.pmcParticipation) : that.pmcParticipation != null) return false;
         return true;
@@ -96,7 +84,6 @@ public class Publisher extends PassEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (pmcParticipation != null ? pmcParticipation.hashCode() : 0);
         return result;
