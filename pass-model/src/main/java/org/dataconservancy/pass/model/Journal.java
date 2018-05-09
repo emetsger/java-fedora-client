@@ -19,8 +19,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Describes a Journal and the path of it's participation in PubMedCentral
  * @author Karen Hanson

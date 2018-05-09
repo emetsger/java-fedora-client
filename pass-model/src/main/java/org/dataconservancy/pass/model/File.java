@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * Files are associated with a Submissions to be used to form Deposits into Repositories

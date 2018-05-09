@@ -17,8 +17,6 @@ package org.dataconservancy.pass.model;
 
 import java.net.URI;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Describes a Repository. A Repository is the target of a Deposit.
  * @author Karen Hanson

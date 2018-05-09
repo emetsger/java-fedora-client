@@ -20,8 +20,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Describes a Policy. Policies determine the rules that need to be followed by a Submission.
  * @author Karen Hanson

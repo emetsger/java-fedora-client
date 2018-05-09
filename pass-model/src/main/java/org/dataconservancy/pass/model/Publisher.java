@@ -15,8 +15,6 @@
  */
 package org.dataconservancy.pass.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Describes a Publisher and its related Journals, also the path of it's participation in PubMedCentral
  * @author Karen Hanson
