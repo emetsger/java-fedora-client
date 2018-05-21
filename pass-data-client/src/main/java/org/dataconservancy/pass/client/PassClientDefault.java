@@ -15,9 +15,11 @@
  */
 package org.dataconservancy.pass.client;
 
+import java.io.InputStream;
 import java.net.URI;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,6 +84,40 @@ public class PassClientDefault implements PassClient {
     @Override
     public Map<String, Collection<URI>> getIncoming(URI passEntity) {
         return crudClient.getIncoming(passEntity);
+    }
+
+    @Override
+    public URI upload(URI entityUri, InputStream content) {
+        return upload(entityUri, content, Collections.emptyMap());
+    }
+
+    /**
+     * {@inheritDoc}
+     * <h4>Implementation notes</h4>
+     * Supported parameters include:
+     * <dl>
+     *     <dt>content-type</dt>
+     *     <dd>the mime type of the {@code content} to be {@code POST}ed; added as a {@code Content-Type} header</dd>
+     *     <dt>slug</dt>
+     *     <dd>suggested name of the resource in the repository; added as a {@code Slug} header</dd>
+     *     <dt>sha256</dt>
+     *     <dd>hexadecimal encoded SHA-256 checksum of {@code content}; added as {@code Digest} header</dd>
+     *     <dt>sha1</dt>
+     *     <dd>hexadecimal encoded SHA-1 checksum of {@code content}; added as {@code Digest} header</dd>
+     *     <dt>md5</dt>
+     *     <dd>hexadecimal encoded MD5 checksum of {@code content}; added as {@code Digest} header</dd>
+     *     <dt>filename</dt>
+     *     <dd>name for {@code content}; added to a {@code Content-Disposition} header</dd>
+     * </dl>
+     *
+     * @param entityUri an existing entity in the repository
+     * @param content the content to {@code POST} to the entity
+     * @param params optional parameters to the {@code POST}, <em>i.e.</em> HTTP header values
+     * @return
+     */
+    @Override
+    public URI upload(URI entityUri, InputStream content, Map<String, ?> params) {
+        return crudClient.upload(entityUri, content, params);
     }
 
     /**
