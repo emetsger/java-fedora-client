@@ -220,6 +220,23 @@ public interface PassClient {
      * <p>
      * The {@code entityUri} must already exist.
      * </p>
+     * <p>
+     * Supported parameters include:
+     * </p>
+     * <dl>
+     *     <dt>content-type</dt>
+     *     <dd>the mime type of the {@code content} to be {@code POST}ed; added as a {@code Content-Type} header</dd>
+     *     <dt>slug</dt>
+     *     <dd>suggested name of the resource in the repository; added as a {@code Slug} header</dd>
+     *     <dt>sha256</dt>
+     *     <dd>hexadecimal encoded SHA-256 checksum of {@code content}; added as {@code Digest} header</dd>
+     *     <dt>sha1</dt>
+     *     <dd>hexadecimal encoded SHA-1 checksum of {@code content}; added as {@code Digest} header</dd>
+     *     <dt>md5</dt>
+     *     <dd>hexadecimal encoded MD5 checksum of {@code content}; added as {@code Digest} header</dd>
+     *     <dt>filename</dt>
+     *     <dd>name for {@code content}; added to a {@code Content-Disposition} header</dd>
+     * </dl>
      *
      * @param entityUri an existing entity in the repository
      * @param content the content to {@code POST} to the entity
