@@ -57,12 +57,23 @@ public class PassClientDefault implements PassClient {
         return crudClient.createResource(modelObj);
     }
 
+    @Override
+    public <T extends PassEntity> T createAndReadResource(PassEntity modelObj, Class<T> modelClass) {
+        return crudClient.readResource(crudClient.createResource(modelObj), modelClass);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void updateResource(PassEntity modelObj) {
         crudClient.updateResource(modelObj);
+    }
+
+    @Override
+    public <T extends PassEntity> T updateAndReadResource(T modelObj, Class<T> modelClass) {
+        crudClient.updateResource(modelObj);
+        return crudClient.readResource(modelObj.getId(), modelClass);
     }
 
     /**
