@@ -16,12 +16,13 @@
 
 package org.dataconservancy.pass.client.integration;
 
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
-import java.net.URI;
-
 import org.dataconservancy.pass.model.PassEntity;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
+
+import java.net.URI;
+
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * Creates PASS entities, and makes sure they can be roundtripped to the repository.
@@ -114,7 +115,7 @@ public class CreateReadResourceRoundTripIT extends ClientITBase {
         final PassEntity retrieved = client.createAndReadResource(asDeposited, asDeposited.getClass());
         assertReflectionEquals(normalized(asDeposited), normalized(retrieved),
                 ReflectionComparatorMode.LENIENT_ORDER);
-        createdUris.put(asDeposited.getId(), asDeposited.getClass());
+        createdUris.put(retrieved.getId(), asDeposited.getClass());
     }
 
 }
