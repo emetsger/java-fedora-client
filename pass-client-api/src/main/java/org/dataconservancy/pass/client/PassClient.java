@@ -42,9 +42,9 @@ public interface PassClient {
     public URI createResource(PassEntity modelObj);
 
     /**
-     * Takes any PassEntity and persists it in the database, returns the URI if successful
-     * or appropriate exception if not. Note that PassEntities that are being created should
-     * have null as their ID, the URI will the the ID field when reading the resource back
+     * Takes any PassEntity and persists it in the database, and returns an updated version of the resource if
+     * successful or appropriate exception if not. Note that PassEntities that are being created should
+     * have null as their ID; the URI will be present on the returned object.
      * @param modelObj
      * @return an updated version of the resource
      */
