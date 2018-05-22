@@ -15,24 +15,8 @@
  */
 package org.dataconservancy.pass.client.fedora;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -41,20 +25,30 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.http.HttpStatus;
-
 import org.dataconservancy.pass.client.PassClientDefault;
 import org.dataconservancy.pass.client.PassJsonAdapter;
 import org.dataconservancy.pass.client.adapter.PassJsonAdapterBasic;
 import org.dataconservancy.pass.model.PassEntity;
-import org.fcrepo.client.PostBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fcrepo.client.DeleteBuilder;
 import org.fcrepo.client.FcrepoClient;
 import org.fcrepo.client.FcrepoOperationFailedException;
 import org.fcrepo.client.FcrepoResponse;
 import org.fcrepo.client.GetBuilder;
+import org.fcrepo.client.PostBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
 import static java.util.Base64.getEncoder;
@@ -333,7 +327,7 @@ public class FedoraPassCrudClient {
 
     private <T extends PassEntity> T createInternal(T modelObj, boolean includeContext) {
         byte[] json = adapter.toJson(modelObj, true);
-        RequestBody body = RequestBody.create(MediaType.parse(COMPACTED_ACCEPTTYPE), json);
+        RequestBody body = RequestBody.create(MediaType.parse(JSONLD_CONTENTTYPE), json);
 
         URI container = null;
         try {
@@ -369,7 +363,7 @@ public class FedoraPassCrudClient {
                 .url(modelObj.getId().toString())
                 .patch(body)
                 .addHeader("If-Match", modelObj.getVersionTag())
-                .addHeader("Accept", JSONLD_CONTENTTYPE)
+                .addHeader("Accept", COMPACTED_ACCEPTTYPE)
                 .addHeader("Prefer", "return=representation; omits=\"" + SERVER_MANAGED_OMITTYPE + "\"");
 
         try (Response res = okHttpClient.newCall(reqBuilder.build()).execute()) {
