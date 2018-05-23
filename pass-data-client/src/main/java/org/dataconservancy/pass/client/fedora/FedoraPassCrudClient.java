@@ -173,11 +173,11 @@ public class FedoraPassCrudClient {
      * @see org.dataconservancy.pass.client.PassClient#updateResource(PassEntity)
      */
     public void updateResource(PassEntity modelObj) {
-        updateInternal(modelObj, true);
+        updateInternal(modelObj, true, false);
     }
 
     public <T extends PassEntity> T updateAndReadResource(T modelObj, Class<T> modelClass) {
-        return updateInternal(modelObj, true);
+        return updateInternal(modelObj, true, true);
     }
 
     /**
@@ -355,7 +355,7 @@ public class FedoraPassCrudClient {
         }
     }
 
-    private <T extends PassEntity> T updateInternal(T modelObj, boolean includeContext) {
+    private <T extends PassEntity> T updateInternal(T modelObj, boolean includeContext, boolean performRead) {
         byte[] json = adapter.toJson(modelObj, true);
         RequestBody body = RequestBody.create(MediaType.parse(JSONLD_PATCH_CONTENTTYPE), json);
 
@@ -378,7 +378,7 @@ public class FedoraPassCrudClient {
             throw new RuntimeException(msg, e);
         }
 
-        return readResource(modelObj.getId(), (Class<T>) modelObj.getClass());
+        return performRead ? readResource(modelObj.getId(), (Class<T>) modelObj.getClass()) : null;
     }
 
     private static <T extends PassEntity> void handleNon2xx(T modelObj, Response res) throws IOException {
