@@ -15,17 +15,16 @@
  */
 package org.dataconservancy.pass.client;
 
+import org.dataconservancy.pass.client.elasticsearch.ElasticsearchPassClient;
+import org.dataconservancy.pass.client.fedora.FedoraPassCrudClient;
+import org.dataconservancy.pass.model.PassEntity;
+
 import java.io.InputStream;
 import java.net.URI;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import org.dataconservancy.pass.client.elasticsearch.ElasticsearchPassClient;
-import org.dataconservancy.pass.client.fedora.FedoraPassCrudClient;
-import org.dataconservancy.pass.model.PassEntity;
 
 /**
  * Creates instances of objects needed to perform PassClient requirements, and redirects to appropriate
@@ -58,8 +57,8 @@ public class PassClientDefault implements PassClient {
     }
 
     @Override
-    public <T extends PassEntity> T createAndReadResource(PassEntity modelObj, Class<T> modelClass) {
-        return crudClient.readResource(crudClient.createResource(modelObj), modelClass);
+    public <T extends PassEntity> T createAndReadResource(T modelObj, Class<T> modelClass) {
+        return crudClient.createAndReadResource(modelObj, modelClass);
     }
 
     /**
@@ -72,8 +71,7 @@ public class PassClientDefault implements PassClient {
 
     @Override
     public <T extends PassEntity> T updateAndReadResource(T modelObj, Class<T> modelClass) {
-        crudClient.updateResource(modelObj);
-        return crudClient.readResource(modelObj.getId(), modelClass);
+        return crudClient.updateAndReadResource(modelObj, modelClass);
     }
 
     /**

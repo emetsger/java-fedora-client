@@ -343,10 +343,10 @@ public class FedoraPassCrudClient {
                 .addHeader("Prefer", "return=representation; omits=\"" + SERVER_MANAGED_OMITTYPE + "\"");
 
         try (Response res = okHttpClient.newCall(reqBuilder.build()).execute()) {
+            handleNon2xx(modelObj, res);
+
             PassEntity entity = adapter.toModel(res.body().byteStream(), modelObj.getClass());
             LOG.info("Container creation status and location: {}, {}", res.code(), entity.getId());
-
-            handleNon2xx(modelObj, res);
 
             return (T) entity;
         } catch (Exception e) {
@@ -367,9 +367,6 @@ public class FedoraPassCrudClient {
                 .addHeader("Prefer", "return=representation; omits=\"" + SERVER_MANAGED_OMITTYPE + "\"");
 
         try (Response res = okHttpClient.newCall(reqBuilder.build()).execute()) {
-            PassEntity entity = adapter.toModel(res.body().byteStream(), modelObj.getClass());
-            LOG.info("Container update status and location: {}, {}", res.code(), entity.getId());
-
             if (res.code() == HttpStatus.SC_PRECONDITION_FAILED) {
                 String msg = format("Failed to update %s - the data may have changed since %s was last retrieved.",
                         modelObj.getId(), modelObj.getId());
@@ -377,6 +374,9 @@ public class FedoraPassCrudClient {
             }
 
             handleNon2xx(modelObj, res);
+
+            PassEntity entity = adapter.toModel(res.body().byteStream(), modelObj.getClass());
+            LOG.info("Container update status and location: {}, {}", res.code(), entity.getId());
 
             return (T) entity;
         } catch (Exception e) {

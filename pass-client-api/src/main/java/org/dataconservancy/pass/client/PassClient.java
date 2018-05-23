@@ -15,14 +15,13 @@
  */
 package org.dataconservancy.pass.client;
 
+import org.dataconservancy.pass.model.PassEntity;
+
 import java.io.InputStream;
 import java.net.URI;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import org.dataconservancy.pass.model.PassEntity;
 
 /**
  * Interface for interactions with PASS database
@@ -48,7 +47,7 @@ public interface PassClient {
      * @param modelObj
      * @return an updated version of the resource
      */
-    public <T extends PassEntity> T createAndReadResource(PassEntity modelObj, Class<T> modelClass);
+    public <T extends PassEntity> T createAndReadResource(T modelObj, Class<T> modelClass);
     
     /**
      * Takes any PassEntity, and updates the record matching the ID field.  
