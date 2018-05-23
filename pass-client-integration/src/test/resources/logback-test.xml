@@ -37,6 +37,13 @@
 
   </logger>
 
+  <logger name="org.dataconservancy.pass.client" additivity="false"
+          level="DEBUG">
+
+    <appender-ref ref="STDOUT" />
+
+  </logger>
+
 
   <root additivity="false" level="WARN">
 
