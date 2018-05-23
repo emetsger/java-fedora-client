@@ -363,8 +363,7 @@ public class FedoraPassCrudClient {
                 .url(modelObj.getId().toString())
                 .patch(body)
                 .addHeader("If-Match", modelObj.getVersionTag())
-                .addHeader("Accept", COMPACTED_ACCEPTTYPE)
-                .addHeader("Prefer", "return=representation; omits=\"" + SERVER_MANAGED_OMITTYPE + "\"");
+                .addHeader("Accept", COMPACTED_ACCEPTTYPE);
 
         try (Response res = okHttpClient.newCall(reqBuilder.build()).execute()) {
             if (res.code() == HttpStatus.SC_PRECONDITION_FAILED) {
@@ -372,18 +371,14 @@ public class FedoraPassCrudClient {
                         modelObj.getId(), modelObj.getId());
                 throw new UpdateConflictException(msg);
             }
-
             handleNon2xx(modelObj, res);
-
-            PassEntity entity = adapter.toModel(res.body().byteStream(), modelObj.getClass());
-            LOG.info("Container update status and location: {}, {}", res.code(), entity.getId());
-
-            return (T) entity;
         } catch (Exception e) {
             String msg = format("A problem occurred while attempting to update Resource %s: %s ",
                     modelObj.getId(), e.getMessage());
             throw new RuntimeException(msg, e);
         }
+
+        return readResource(modelObj.getId(), (Class<T>) modelObj.getClass());
     }
 
     private static <T extends PassEntity> void handleNon2xx(T modelObj, Response res) throws IOException {
