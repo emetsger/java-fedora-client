@@ -362,8 +362,14 @@ public class FedoraPassCrudClient {
         Request.Builder reqBuilder = new Request.Builder()
                 .url(modelObj.getId().toString())
                 .patch(body)
-                .addHeader("If-Match", modelObj.getVersionTag())
                 .addHeader("Accept", COMPACTED_ACCEPTTYPE);
+
+        if (modelObj.getVersionTag() != null) {
+            reqBuilder.addHeader("If-Match", modelObj.getVersionTag());
+        } else {
+            LOG.warn("Executing PATCH without 'If-Match' header: a {}, id '{}' has a null 'version tag'",
+                    modelObj.getClass().getName(), modelObj.getId());
+        }
 
         try (Response res = okHttpClient.newCall(reqBuilder.build()).execute()) {
             if (res.code() == HttpStatus.SC_PRECONDITION_FAILED) {
@@ -372,6 +378,8 @@ public class FedoraPassCrudClient {
                 throw new UpdateConflictException(msg);
             }
             handleNon2xx(modelObj, res);
+        } catch (UpdateConflictException e) {
+            throw e;
         } catch (Exception e) {
             String msg = format("A problem occurred while attempting to update Resource %s: %s ",
                     modelObj.getId(), e.getMessage());
