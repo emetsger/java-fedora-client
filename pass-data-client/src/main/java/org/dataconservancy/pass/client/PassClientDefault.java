@@ -71,7 +71,8 @@ public class PassClientDefault implements PassClient {
 
     @Override
     public <T extends PassEntity> T updateAndReadResource(T modelObj, Class<T> modelClass) {
-        return crudClient.updateAndReadResource(modelObj, modelClass);
+        crudClient.updateResource(modelObj);
+        return crudClient.readResource(modelObj.getId(), modelClass);
     }
 
     /**
