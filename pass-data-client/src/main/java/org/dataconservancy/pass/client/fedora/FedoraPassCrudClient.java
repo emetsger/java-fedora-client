@@ -139,6 +139,17 @@ public class FedoraPassCrudClient {
             okBuilder.addInterceptor(loggingInterceptor);
         }
 
+        String userAgent = System.getProperty("http.agent");
+        if (userAgent != null) {
+            LOG.trace("Adding 'User-Agent' header with value: {}", userAgent);
+            okBuilder.addInterceptor((requestChain) -> {
+                Request.Builder reqBuilder = requestChain.request().newBuilder();
+                reqBuilder.removeHeader("User-Agent");
+                reqBuilder.addHeader("User-Agent", userAgent);
+                return requestChain.proceed(reqBuilder.build());
+            });
+        }
+
         this.okHttpClient = okBuilder.build();
     }
 
