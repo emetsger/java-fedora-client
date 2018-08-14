@@ -97,7 +97,7 @@
             </image>
             <image>
               <alias>indexer</alias>
-              <name>oapass/indexer:0.0.10-2.2-SNAPSHOT</name>
+              <name>oapass/indexer:0.0.13-2.3-SNAPSHOT</name>
               <run>
                 <namingStrategy>alias</namingStrategy>
                 <env>
