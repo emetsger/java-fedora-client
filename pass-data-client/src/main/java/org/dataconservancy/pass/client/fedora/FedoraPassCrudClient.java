@@ -114,8 +114,8 @@ public class FedoraPassCrudClient {
 
     /** 
      * Support passing in of Fedora client and adapter.  Instantiates a default OkHttpClient.
-     * @param client
-     * @param adapter
+     * @param client Fedora client.
+     * @param adapter JSON adapter.
      */
     public FedoraPassCrudClient(FcrepoClient client, PassJsonAdapter adapter) {
         if (client == null) {
@@ -162,9 +162,9 @@ public class FedoraPassCrudClient {
 
     /**
      * Support passing in of Fedora client, JSON adapter, and OkHttpClient
-     * @param client
-     * @param adapter
-     * @param okHttpClient
+     * @param client Fedora client
+     * @param adapter JSON adapter
+     * @param okHttpClient HTTP client
      */
     public FedoraPassCrudClient(FcrepoClient client, PassJsonAdapter adapter, OkHttpClient okHttpClient) {
         if (client == null) {
@@ -183,6 +183,9 @@ public class FedoraPassCrudClient {
 
     /**
      * @see org.dataconservancy.pass.client.PassClient#createResource(PassEntity)
+     * 
+     * @param modelObj modelObj
+     * @return URI
      */
     public URI createResource(PassEntity modelObj) {
         return createInternal(modelObj, true).getId();
@@ -190,6 +193,11 @@ public class FedoraPassCrudClient {
 
     /**
      * @see org.dataconservancy.pass.client.PassClient#createResource(PassEntity)
+     * 
+     * @param modelObj modelObj
+     * @param modelClass modelClass
+     * @return PASS entity.
+     * @param <T> PASS entity type
      */
     public <T extends PassEntity> T createAndReadResource(T modelObj, Class<T> modelClass) {
         return createInternal(modelObj, true);
@@ -197,17 +205,26 @@ public class FedoraPassCrudClient {
 
     /**
      * @see org.dataconservancy.pass.client.PassClient#updateResource(PassEntity)
+     * @param modelObj modelObj
      */
     public void updateResource(PassEntity modelObj) {
         updateInternal(modelObj, true, false);
     }
 
+    /** 
+     * @see org.dataconservancy.pass.client.PassClient#updateAndReadResource(PassEntity, Class)
+     * @param modelObj modelObj
+     * @param modelClass modelClass
+     * @return PASS entity.
+     * @param <T> PASS entity type
+     */
     public <T extends PassEntity> T updateAndReadResource(T modelObj, Class<T> modelClass) {
         return updateInternal(modelObj, true, true);
     }
 
     /**
      * @see org.dataconservancy.pass.client.PassClient#deleteResource(URI)
+     * @param uri uri.
      */
     public void deleteResource(URI uri) {
         try (FcrepoResponse response = new DeleteBuilder(uri, client).perform()) {
@@ -219,6 +236,11 @@ public class FedoraPassCrudClient {
 
     /**
      * @see org.dataconservancy.pass.client.PassClient#readResource(URI, Class)
+     * 
+     * @param uri uri
+     * @param modelClass modelClass
+     * @return PASS entity
+     * @param <T> PASS entity type
      */
     public <T extends PassEntity> T readResource(URI uri, Class<T> modelClass) {      
 
@@ -253,6 +275,8 @@ public class FedoraPassCrudClient {
 
     /**
      * @see org.dataconservancy.pass.client.PassClient#getIncoming(URI)
+     * @param passEntityUri pass entity URI
+     * @return map
      */
     public Map<String, Collection<URI>> getIncoming(URI passEntityUri) {
         List<URI> include = Collections.singletonList(URI.create(INCOMING_INCLUDETYPE));
@@ -308,6 +332,10 @@ public class FedoraPassCrudClient {
     /**
      * @see PassClientDefault#upload(URI, InputStream, Map)
      *
+     * @param passEntityUri PASS entity
+     * @param content content to upload
+     * @param params parameters
+     * @return URI of uploaded content
      * @throws RuntimeException if building the request to the repository fails, or if performing the request fails
      */
     public URI upload(URI passEntityUri, InputStream content, Map<String, ?> params) {
@@ -351,6 +379,13 @@ public class FedoraPassCrudClient {
         }
     }
     
+    /**
+     * Process all entities
+     * @param processor processor
+     * @param modelClass modelClass
+     * @return number visited
+     * @param <T> PASS entity type
+     */
     public <T extends PassEntity> int processAllEntities(Consumer<URI> processor, Class<T> modelClass) {
         if (modelClass == null) {
             return crawler.visit(

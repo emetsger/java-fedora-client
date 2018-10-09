@@ -21,18 +21,44 @@ package org.dataconservancy.pass.model;
  * @author Karen Hanson
  */
 public enum PassEntityType {
+    
+    /** Contributor */
     CONTRIBUTOR ("Contributor", "contributors"),
+    
+    /** Deposit */
     DEPOSIT ("Deposit", "deposits"),
+    
+    /** File */
     FILE ("File", "files"),
+    
+    /** Funder */
     FUNDER ("Funder", "funders"),
+    
+    /** Grant */
     GRANT ("Grant", "grants"),
+    
+    /** Journal */
     JOURNAL ("Journal", "journals"),
+    
+    /** Policy */
     POLICY ("Policy", "policies"),
+    
+    /** Publication */
     PUBLICATION ("Publication", "publications"),
+    
+    /** Publisher */
     PUBLISHER ("Publisher", "publishers"),
+    
+    /** Repository */
     REPOSITORY ("Repository", "repositories"),
+    
+    /** Repository copy */
     REPOSITORY_COPY ("RepositoryCopy", "repositoryCopies"),
+    
+    /** Submission */
     SUBMISSION ("Submission", "submissions"),
+    
+    /** User */
     USER ("User", "users");
     
     private String name;
@@ -43,17 +69,27 @@ public enum PassEntityType {
         this.plural = plural;
     }
     
+    /** 
+     * Get the name.
+     * 
+     * @return The name
+     */
     public String getName() {
         return this.name;
     }
     
+    /** 
+     * Get pluralized name.
+     * 
+     * @return Pluralized name
+     */
     public String getPlural() {
         return this.plural;
     }
     
     /**
      * Match enum using name
-     * @param name
+     * @param name The name of the type
      * @return matching PassEntityType or null if no matches
      */
     public static PassEntityType getTypeByName(String name) {

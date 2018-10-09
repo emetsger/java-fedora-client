@@ -131,6 +131,12 @@ public class Submission extends PassEntity {
             this.value = value;
         }
         
+        /** 
+         * Parse the aggregated deposit status.
+         * 
+         * @param status Serialized status
+         * @return parsed deposit status.
+         */
         public static AggregatedDepositStatus of(String status) {
             AggregatedDepositStatus result = map.get(status);
             if (result == null) {
@@ -150,8 +156,12 @@ public class Submission extends PassEntity {
     /** 
      * Source of the Submission, from a PASS user or imported from another source*/
     public enum Source {
+        
+        /** PASS source */
         @JsonProperty("pass")
         PASS("pass"),
+        
+        /** Other source */
         @JsonProperty("other")
         OTHER("other");
         

@@ -16,12 +16,18 @@
 package org.dataconservancy.pass.client;
 
 
-/**
+/** 
+ * PASS client factory.
  *
  * @author Karen Hanson
  */
 public class PassClientFactory {
 
+    /** 
+     * Get a default PASS client.
+     * 
+     * @return PASS client.
+     */
     public static PassClient getPassClient() {
         return new PassClientDefault();
     }
