@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.apache.http.HttpHost;
 
@@ -57,9 +56,9 @@ public class ElasticsearchPassClient {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchPassClient.class);
     
     /**
-     * Template for a search attribute e.g. AND fldname:something
+     * Template for a search attribute e.g. AND fldname:"something"
      */
-    private static final String QS_ATTRIB_TEMPLATE = " AND %s:%s";
+    private static final String QS_ATTRIB_TEMPLATE  = " AND %s:\"%s\"";
     
     /**
      * Template for a query string e.g. (@type:Submission AND fldname:"something")
@@ -71,7 +70,7 @@ public class ElasticsearchPassClient {
 
     private static final String NOT_EXISTS_TEMPLATE = "-" + EXISTS_TEMPLATE;
 
-    private static final String QS_ATTRIB_NOT_EXISTS_TEMPLATE = " AND " + NOT_EXISTS_TEMPLATE;
+    private static final String QS_ATTRIB_NOT_EXISTS_TEMPLATE = "AND " + NOT_EXISTS_TEMPLATE;
     
     private static final String ID_FIELDNAME = "@id";
 
@@ -114,8 +113,13 @@ public class ElasticsearchPassClient {
             indexType = PassEntityType.getTypeByName(modelClass.getSimpleName()).getName();
         }
 
-        String attribs = buildAttributeString(attribute, value);
-        String querystring = applyTemplate(QS_TEMPLATE, attribs, indexType);
+        String attribs = null;
+        if (value != null) {
+            attribs = String.format(QS_ATTRIB_TEMPLATE, attribute, value.toString());
+        } else {
+            attribs = String.format(QS_ATTRIB_NOT_EXISTS_TEMPLATE, attribute);
+        }
+        String querystring = String.format(QS_TEMPLATE, indexType, attribs);
              
         Set<URI> passEntityUris = getIndexerResults(querystring, 2, 0); //get 2 so we can check only one result matched
         if (passEntityUris.size()>1) {
@@ -169,8 +173,13 @@ public class ElasticsearchPassClient {
             indexType = PassEntityType.getTypeByName(modelClass.getSimpleName()).getName();
         }
 
-        String attribs = buildAttributeString(attribute, value);
-        String querystring = applyTemplate(QS_TEMPLATE, attribs, indexType);
+        String attribs = null;
+        if (value != null) {
+            attribs = String.format(QS_ATTRIB_TEMPLATE, attribute, value.toString());
+        } else {
+            attribs = String.format(NOT_EXISTS_TEMPLATE, attribute);
+        }
+        String querystring = String.format(QS_TEMPLATE, indexType, attribs);                
         Set<URI> passEntityUris = getIndexerResults(querystring, limit, offset);
         
         return passEntityUris;
@@ -212,14 +221,22 @@ public class ElasticsearchPassClient {
         if (PassEntityType.getTypeByName(modelClass.getSimpleName())!=null) {
             indexType = PassEntityType.getTypeByName(modelClass.getSimpleName()).getName();
         }
-
-        StringBuilder attribs = buildAttributeString(valueAttributesMap);
-        String querystring = applyTemplate(QS_TEMPLATE, attribs.toString(), indexType);
+        
+        StringBuilder attribs = new StringBuilder("");
+        for(Entry<String,Object> attr : valueAttributesMap.entrySet()) {
+            if (attr.getValue() != null) {
+                attribs.append(String.format(QS_ATTRIB_TEMPLATE, attr.getKey(), attr.getValue().toString()));
+            } else {
+                attribs.append(String.format(QS_ATTRIB_NOT_EXISTS_TEMPLATE, attr.getKey()));
+            }
+        }
+        String querystring = String.format(QS_TEMPLATE, indexType, attribs);
                 
         Set<URI> passEntityUris = getIndexerResults(querystring, limit, offset);
         return passEntityUris;
     }
-
+    
+    
     /**
      * Retrieve search results from elasticsearch
      * @param querystring
@@ -284,125 +301,6 @@ public class ElasticsearchPassClient {
         if (attribute==null || attribute.length()==0) {throw new IllegalArgumentException("attribute cannot be null or empty");}
         if (value instanceof Collection<?>) {throw new IllegalArgumentException("Value for attribute " + attribute + " cannot be a Collection");}
         if (value==null && !allowNullValues) {throw new IllegalArgumentException("Value cannot be null or empty");}
-    }
-
-    /**
-     * Applies the supplied arguments to the template.
-     *
-     * @param template
-     * @param attribs
-     * @param indexType
-     * @return
-     */
-    private static String applyTemplate(String template, String attribs, String indexType) {
-        return String.format(template, indexType, attribs);
-    }
-
-    /**
-     * Prepares the '{@code attribute:value}' portion of the Elastic Search query from a Map of attribute value pairs.
-     * <p>
-     * Each attribute value pair will be processed according to {@link #buildAttributeString(String, String)}.
-     * </p>
-     *
-     * @param valueAttributesMap a Map keyed by attribute names containing attribute values (which may be {@code null})
-     * @return a portion of the Elastic Search query; each {@code non-null} attribute value will be escaped
-     * @see #buildAttributeString(String, String)
-     */
-    static StringBuilder buildAttributeString(Map<String, Object> valueAttributesMap) {
-        StringBuilder sb = new StringBuilder();
-        for (Entry<String, Object> attr : valueAttributesMap.entrySet()) {
-            sb.append(buildAttributeString(attr.getKey(),
-                    (attr.getValue() == null) ? null : attr.getValue().toString()));
-        }
-
-        return sb;
-    }
-
-    /**
-     * Prepares the '{@code attribute:value}' portion of the Elastic Search query.
-     * <p>
-     * If the {@code attributeValue} is {@code null}, then the {@link #QS_ATTRIB_NOT_EXISTS_TEMPLATE} is applied.
-     * Otherwise, the {@code attributeValue} is processed to escape any special characters, then has the {@link
-     * #QS_ATTRIB_TEMPLATE} applied.
-     * </p>
-     *
-     * @param attributeName  the name of the Elastic Search query attribute
-     * @param attributeValue the (pre-escaped) Elastic Search attribute value, or {@code null}
-     * @return a portion of the Elastic Search query; escaped in the case of a {@code non-null} attribute value
-     */
-    static String buildAttributeString(String attributeName, Object attributeValue) {
-        return buildAttributeString(attributeName, (attributeValue == null) ? null : attributeValue.toString())
-                .toString();
-    }
-
-    /**
-     * Prepares the '{@code attribute:value}' portion of the Elastic Search query.
-     * <p>
-     * If the {@code attributeValue} is {@code null}, then the {@link #QS_ATTRIB_NOT_EXISTS_TEMPLATE} is applied.
-     * Otherwise, the {@code attributeValue} is processed to escape any special characters, then has the {@link
-     * #QS_ATTRIB_TEMPLATE} applied.
-     * </p>
-     *
-     * @param attributeName the name of the Elastic Search query attribute
-     * @param attributeValue the (pre-escaped) Elastic Search attribute value, or {@code null}
-     * @return a portion of the Elastic Search query; escaped in the case of a {@code non-null} attribute value
-     */
-    static StringBuilder buildAttributeString(String attributeName, String attributeValue) {
-        StringBuilder sb = new StringBuilder();
-        if (attributeValue != null) {
-            StringBuilder escapedValue = new StringBuilder(attributeValue);
-            escape(escapedValue);
-            sb.append(applyTemplate(QS_ATTRIB_TEMPLATE, escapedValue.toString(), attributeName));
-        } else {
-            sb.append(String.format(QS_ATTRIB_NOT_EXISTS_TEMPLATE, attributeName));
-        }
-
-        return sb;
-    }
-
-    /**
-     * Escapes special characters in the supplied string.  The supplied string should <em>not</em> be escaped already-
-     * there are no provisions in this method for detecting already-escaped strings.  If a string already contains
-     * escapes, it will be doubly-escaped.
-     * <p>
-     * This method simply returns the same StringBuilder it was supplied, as a convenience to the caller.
-     * </p>
-     *
-     * @param valueString the string which may contain special characters requiring escape
-     * @return the string with any special characters escaped
-     */
-    private static StringBuilder escape(StringBuilder valueString) {
-        // https://www.elastic.co/guide/en/elasticsearch/reference/6.2/query-dsl-query-string-query.html#_reserved_characters
-        // + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
-//        Stream.of("\\", "+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "\"", "~", "*", "?", ":", "/")
-        Stream.of(":", "/")
-                .forEach((lookingFor) ->
-                    {
-                        String replacement = join("", "\\", lookingFor);
-//                        System.err.println(">> replacement '" + replacement + "'");
-                        replace(valueString.indexOf(lookingFor), lookingFor, replacement, valueString);
-                    });
-        return valueString;
-    }
-
-    /**
-     * Recursively searches the {@code builder} for the string {@code lookingFor} and replacing it with {@code
-     * replacement}.
-     *
-     * @param idx the index of {@code lookingFor} in {@code builder}, may be {@code -1}
-     * @param lookingFor the string being replaced in the {@code builder}
-     * @param replacement the string replacing {@code lookingFor}
-     * @param builder the string that may contain {@code lookingFor}
-     * @return -1
-     */
-    private static int replace(int idx, String lookingFor, String replacement, StringBuilder builder) {
-        if (idx > -1 && idx < builder.length()) {
-//            System.err.println(">> replacing character at index " + idx + " ('" + builder.charAt(idx) + "') with '" + replacement + "'");
-            builder.replace(idx, idx + 1, replacement);
-            return replace(builder.indexOf(lookingFor, idx + 2), lookingFor, replacement, builder);
-        } else {
-            return -1;
-        }
     }
     
 }
