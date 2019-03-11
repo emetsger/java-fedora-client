@@ -19,12 +19,8 @@ import java.net.URI;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.RecursiveAction;
 
 import org.dataconservancy.pass.model.Deposit;
-import org.dataconservancy.pass.model.Repository;
-import org.dataconservancy.pass.model.RepositoryCopy;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.dataconservancy.pass.model.File;
@@ -32,7 +28,6 @@ import org.dataconservancy.pass.model.Grant;
 import org.dataconservancy.pass.model.Submission;
 import org.dataconservancy.pass.model.User;
 
-import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -180,66 +175,5 @@ public class FindAllByAttributeIT extends ClientITBase {
         }
         fail ("Test should have thrown exception");
     }
-
-    /**
-     * Find a RepositoryCopy by matching on the IP address/port pair of the accessUrl.
-     * Can't do this right now because the accessUrl is incorrectly normalized as a Fedora URI.
-     */
-    @Test
-    @Ignore("Enable when accessUrl no longer has a normalizer")
-    public void testWildcardFindRepositoryCopyByMatchingAccessUrlWithIPandPort() {
-        RepositoryCopy repoCopy = random(RepositoryCopy.class, 1);
-        repoCopy = client.createAndReadResource(repoCopy, RepositoryCopy.class);
-        URI accessUrl = repoCopy.getId();
-        repoCopy.setAccessUrl(accessUrl);
-        client.updateResource(repoCopy);
-
-        String query = format("*%s:%s*", repoCopy.getId().getHost(), repoCopy.getId().getPort());
-
-        attempt(RETRIES, () -> {
-            URI u = client.findByAttribute(RepositoryCopy.class, "accessUrl", query);
-            RepositoryCopy rc = client.readResource(u, RepositoryCopy.class);
-            assertEquals(accessUrl, rc.getAccessUrl());
-        });
-    }
-
-    /**
-     * Find a Repository by matching on a portion of its description.
-     * Description is a keyword, no normalizer.
-     */
-    @Test
-    public void testWildcardFindRepositoryByDescriptionContainingSpaces() {
-        Repository repo = random(Repository.class, 1);
-        repo.setDescription("A description with spaces.");
-        URI repoUri = client.createResource(repo);
-        createdUris.put(repoUri, Repository.class);
-
-        String query = "*description with *";
-
-        attempt(RETRIES, () -> {
-            URI u = client.findByAttribute(Repository.class, "description", query);
-            Repository r = client.readResource(u, Repository.class);
-            assertEquals(repo.getDescription(), r.getDescription());
-        });
-    }
-
-    /**
-     * Find a Deposit by matching on the the IP address/port pair in the status ref.
-     * Status ref is a keyword, no normalizer.
-     */
-    @Test
-    public void testWildcardFindDepositByMatchingStatusRefWithIPandPort() {
-        Deposit deposit = random(Deposit.class, 1);
-        deposit.setDepositStatusRef("http://192.168.99.100:23412/some/path");
-        URI depositUri = client.createResource(deposit);
-        createdUris.put(depositUri, Deposit.class);
-
-        String query = format("*%s:%s*", "192.168.99.100", "23412");
-
-        attempt(RETRIES, () -> {
-            URI u = client.findByAttribute(Deposit.class, "depositStatusRef", query);
-            assertEquals(depositUri, client.readResource(u, Deposit.class).getId());
-        });
-    }
-
+    
 }
