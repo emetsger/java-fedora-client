@@ -30,7 +30,7 @@ public class Journal extends PassEntity {
     /** 
      * Name of journal 
      */
-    private String name;
+    private String journalName;
     
     /** 
      * Array of ISSN(s) for Journal 
@@ -66,7 +66,7 @@ public class Journal extends PassEntity {
      */
     public Journal(Journal journal) {
         super(journal);
-        this.name = journal.name;
+        this.journalName = journal.journalName;
         this.issns = new ArrayList<String>(journal.issns);
         this.publisher = journal.publisher;
         this.nlmta = journal.nlmta;
@@ -75,18 +75,18 @@ public class Journal extends PassEntity {
     
     
     /**
-     * @return the name
+     * @return the journalName
      */
-    public String getName() {
-        return name;
+    public String getJournalName() {
+        return journalName;
     }
 
     
     /**
-     * @param name the name to set
+     * @param journalName the journalName to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setJournalName(String journalName) {
+        this.journalName = journalName;
     }
 
     
@@ -161,7 +161,7 @@ public class Journal extends PassEntity {
 
         Journal that = (Journal) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (journalName != null ? !journalName.equals(that.journalName) : that.journalName != null) return false;
         if (issns != null ? !issns.equals(that.issns) : that.issns != null) return false;
         if (publisher != null ? !publisher.equals(that.publisher) : that.publisher != null) return false;
         if (nlmta != null ? !nlmta.equals(that.nlmta) : that.nlmta != null) return false;
@@ -173,7 +173,7 @@ public class Journal extends PassEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (journalName != null ? journalName.hashCode() : 0);
         result = 31 * result + (issns != null ? issns.hashCode() : 0);
         result = 31 * result + (publisher != null ? publisher.hashCode() : 0);
         result = 31 * result + (nlmta != null ? nlmta.hashCode() : 0);

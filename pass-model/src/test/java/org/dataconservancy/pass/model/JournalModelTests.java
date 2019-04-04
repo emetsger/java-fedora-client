@@ -51,7 +51,7 @@ public class JournalModelTests {
         Journal journal = objectMapper.readValue(json, Journal.class);
         
         assertEquals(TestValues.JOURNAL_ID_1, journal.getId().toString());
-        assertEquals(TestValues.JOURNAL_NAME, journal.getName());
+        assertEquals(TestValues.JOURNAL_NAME, journal.getJournalName());
         assertEquals(TestValues.JOURNAL_ISSN_1, journal.getIssns().get(0));
         assertEquals(TestValues.JOURNAL_ISSN_2, journal.getIssns().get(1));
         assertEquals(TestValues.PUBLISHER_ID_1, journal.getPublisher().toString());
@@ -74,7 +74,7 @@ public class JournalModelTests {
 
         assertEquals(root.getString("@id"),TestValues.JOURNAL_ID_1);
         assertEquals(root.getString("@type"),"Journal");
-        assertEquals(root.getString("name"),TestValues.JOURNAL_NAME);
+        assertEquals(root.getString("journalName"),TestValues.JOURNAL_NAME);
         assertEquals(root.getJSONArray("issns").get(0),TestValues.JOURNAL_ISSN_1);
         assertEquals(root.getJSONArray("issns").get(1),TestValues.JOURNAL_ISSN_2);
         assertEquals(root.getString("publisher"),TestValues.PUBLISHER_ID_1);
@@ -95,7 +95,7 @@ public class JournalModelTests {
         Journal journal2 = createJournal();
         
         assertEquals(journal1,journal2);
-        journal1.setName("different");
+        journal1.setJournalName("different");
         assertTrue(!journal1.equals(journal2));
         
         assertTrue(journal1.hashCode()!=journal2.hashCode());
@@ -130,7 +130,7 @@ public class JournalModelTests {
     private Journal createJournal() throws Exception {
         Journal journal = new Journal();
         journal.setId(new URI(TestValues.JOURNAL_ID_1));
-        journal.setName(TestValues.JOURNAL_NAME);
+        journal.setJournalName(TestValues.JOURNAL_NAME);
         List<String> issns = new ArrayList<String>();
         issns.add(TestValues.JOURNAL_ISSN_1);
         issns.add(TestValues.JOURNAL_ISSN_2);
