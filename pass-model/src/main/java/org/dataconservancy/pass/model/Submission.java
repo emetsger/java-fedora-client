@@ -112,6 +112,11 @@ public class Submission extends PassEntity {
      */
     private List<URI> grants = new ArrayList<>();
 
+    /**
+     * List of the Policy resources being satisfied upon submission
+     */
+    private List<URI> effectivePolicies = new ArrayList<>();
+
     
     /**
      * Submission constructor
@@ -138,6 +143,7 @@ public class Submission extends PassEntity {
         this.submitterEmail = submission.submitterEmail;
         this.preparers = new ArrayList<URI>(submission.preparers);
         this.grants = new ArrayList<URI>(submission.grants);
+        this.effectivePolicies = new ArrayList<>(submission.effectivePolicies);
     }
     
     
@@ -555,6 +561,21 @@ public class Submission extends PassEntity {
         this.grants = grants;
     }
 
+    /**
+     *
+     * @return the policies being satisfied upon submission
+     */
+    public List<URI> getEffectivePolicies() {
+        return effectivePolicies;
+    }
+
+    /**
+     *
+     * @param effectivePolicies the policies being satisfied upon submission
+     */
+    public void setEffectivePolicies(List<URI> effectivePolicies) {
+        this.effectivePolicies = effectivePolicies;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -572,6 +593,7 @@ public class Submission extends PassEntity {
         if (aggregatedDepositStatus != null ? !aggregatedDepositStatus.equals(that.aggregatedDepositStatus) : that.aggregatedDepositStatus != null) return false;
         if (publication != null ? !publication.equals(that.publication) : that.publication != null) return false;
         if (repositories != null ? !repositories.equals(that.repositories) : that.repositories != null) return false;
+        if (effectivePolicies != null ? !effectivePolicies.equals(that.effectivePolicies) : that.effectivePolicies != null) return false;
         if (submitter != null ? !submitter.equals(that.submitter) : that.submitter != null) return false;
         if (submitterName != null ? !submitterName.equals(that.submitterName) : that.submitterName != null) return false;
         if (submitterEmail != null ? !submitterEmail.equals(that.submitterEmail) : that.submitterEmail != null) return false;
@@ -592,6 +614,7 @@ public class Submission extends PassEntity {
         result = 31 * result + (aggregatedDepositStatus != null ? aggregatedDepositStatus.hashCode() : 0);
         result = 31 * result + (publication != null ? publication.hashCode() : 0);
         result = 31 * result + (repositories != null ? repositories.hashCode() : 0);
+        result = 31 * result + (effectivePolicies != null ? effectivePolicies.hashCode() : 0);
         result = 31 * result + (submitter != null ? submitter.hashCode() : 0);
         result = 31 * result + (submitterName != null ? submitterName.hashCode() : 0);
         result = 31 * result + (submitterEmail != null ? submitterEmail.hashCode() : 0);
