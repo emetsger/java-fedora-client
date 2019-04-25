@@ -198,7 +198,14 @@ public class Submission extends PassEntity {
          * the Submission was successful.
          */
         @JsonProperty("complete")
-        COMPLETE("complete", true);
+        COMPLETE("complete", true),
+
+        /**
+         * Submissions newly created by the UI will have this status.  Submissions with this status have not yet
+         * been submitted.
+         */
+        @JsonProperty("draft")
+        DRAFT("draft",false);
 
         private static final Map<String, SubmissionStatus> map = new HashMap<>(values().length, 1);  
         static {
