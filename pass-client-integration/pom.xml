@@ -26,8 +26,8 @@
     </profile>
   </profiles>
   <properties>
-    <FCREPO_HOST>localhost</FCREPO_HOST>
-    <ES_HOST>localhost</ES_HOST>
+    <FCREPO_HOST>${docker.host.address}</FCREPO_HOST>
+    <ES_HOST>${docker.host.address}</ES_HOST>
   </properties>
 
   <build>
@@ -67,7 +67,7 @@
                 <hostname>fcrepo</hostname>
                 <namingStrategy>alias</namingStrategy>
                 <env>
-                  <FCREPO_HOST>${FCREPO_HOST}</FCREPO_HOST>
+                  <FCREPO_HOST>fcrepo</FCREPO_HOST>
                   <FCREPO_PORT>${FCREPO_PORT}</FCREPO_PORT>
                   <FCREPO_JMS_PORT>${FCREPO_JMS_PORT}</FCREPO_JMS_PORT>
                   <FCREPO_STOMP_PORT>${FCREPO_STOMP_PORT}</FCREPO_STOMP_PORT>
@@ -102,10 +102,10 @@
                 <env>
                   <PI_FEDORA_USER>fedoraAdmin</PI_FEDORA_USER>
                   <PI_FEDORA_PASS>moo</PI_FEDORA_PASS>
-                  <PI_FEDORA_INTERNAL_BASE>http://${FCREPO_HOST}:${FCREPO_PORT}/fcrepo/rest/</PI_FEDORA_INTERNAL_BASE>
+                  <PI_FEDORA_INTERNAL_BASE>http://fcrepo:${FCREPO_PORT}/fcrepo/rest/</PI_FEDORA_INTERNAL_BASE>
                   <PI_ES_BASE>http://elasticsearch:9200/</PI_ES_BASE>
                   <PI_ES_INDEX>http://elasticsearch:9200/pass/</PI_ES_INDEX>
-                  <PI_FEDORA_JMS_BROKER>tcp://${FCREPO_HOST}:${FCREPO_JMS_PORT}</PI_FEDORA_JMS_BROKER>
+                  <PI_FEDORA_JMS_BROKER>tcp://fcrepo:${FCREPO_JMS_PORT}</PI_FEDORA_JMS_BROKER>
                   <PI_FEDORA_JMS_QUEUE>fedora</PI_FEDORA_JMS_QUEUE>
                   <PI_TYPE_PREFIX>http://oapass.org/ns/pass#</PI_TYPE_PREFIX>
                   <PI_LOG_LEVEL>DEBUG</PI_LOG_LEVEL>
