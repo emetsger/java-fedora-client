@@ -17,7 +17,9 @@ package org.dataconservancy.pass.model;
 
 import java.net.URI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -65,7 +67,11 @@ public class Repository extends PassEntity {
      */
     private String repositoryKey;
 
-    
+    /**
+     * URLs that link to JSON schema documents describing the repository's metadata requirements
+     */
+    private List<URI> schemas = new ArrayList<>();
+
     /**
      * Repository constructor
      */
@@ -85,6 +91,7 @@ public class Repository extends PassEntity {
         this.formSchema = repository.formSchema;
         this.integrationType = repository.integrationType;
         this.repositoryKey = repository.repositoryKey;
+        this.schemas = new ArrayList<>(repository.schemas);
     }
     
 
@@ -254,6 +261,22 @@ public class Repository extends PassEntity {
         this.repositoryKey = repositoryKey;
     }
 
+    /**
+     *
+     * @return URLs that link to JSON schema documents describing the repository's metadata requirements
+     */
+    public List<URI> getSchemas() {
+        return schemas;
+    }
+
+    /**
+     *
+     * @param schemas URLs that link to JSON schema documents describing the repository's metadata requirements
+     */
+    public void setSchemas(List<URI> schemas) {
+        this.schemas = schemas;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -269,6 +292,7 @@ public class Repository extends PassEntity {
         if (integrationType != null ? !integrationType.equals(that.integrationType) : that.integrationType != null) return false;
         if (agreementText != null ? !agreementText.equals(that.agreementText) : that.agreementText != null) return false; 
         if (repositoryKey != null ? !repositoryKey.equals(that.repositoryKey) : that.repositoryKey != null) return false;
+        if (schemas != null ? !schemas.equals(that.schemas) : that.schemas != null) return false;
         return true;
     }
 
@@ -283,6 +307,7 @@ public class Repository extends PassEntity {
         result = 31 * result + (integrationType != null ? integrationType.hashCode() : 0);
         result = 31 * result + (agreementText != null ? agreementText.hashCode() : 0);
         result = 31 * result + (repositoryKey != null ? repositoryKey.hashCode() : 0);
+        result = 31 * result + (schemas != null ? schemas.hashCode() : 0);
         return result;
     }
     
