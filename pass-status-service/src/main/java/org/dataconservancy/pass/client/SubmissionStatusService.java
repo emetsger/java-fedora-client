@@ -61,7 +61,7 @@ public class SubmissionStatusService
     /**
      * Calculates the appropriate {@link SubmissionStatus} for the {@code Submission.id} provided. 
      * This is based on the status of associated {@link Deposit}s and {@link RepositoryCopy}s for 
-     * {@code submitted} records, and {@link SubmissionEvent}s for unsubmitted records.
+     * {@code submitted} records, and the existing status (if any) and {@link SubmissionEvent}s for unsubmitted records.
      * @param submissionId Submission URI
      * @return calculated submission status.
      */
@@ -74,7 +74,7 @@ public class SubmissionStatusService
     /**
      * Calculates the appropriate {@link SubmissionStatus} for the {@link Submission} provided. 
      * This is based on the status of associated {@link Deposit}s and {@link RepositoryCopy}s for 
-     * {@code submitted} records, and {@link SubmissionEvent}s for unsubmitted records.
+     * {@code submitted} records, and the existing status (if any) and {@link SubmissionEvent}s for unsubmitted records.
      * @param submission The submission
      * @return Calculated submission status
      */
@@ -97,8 +97,10 @@ public class SubmissionStatusService
         if (!submitted) {
             
             List<SubmissionEvent> submissionEvents = getConnectedRecords(submissionLinks, PassEntityType.SUBMISSION_EVENT, SubmissionEvent.class);
-            
-            toStatus = SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents);            
+
+            // Calculate the pre-submission status, defaulting to the existing status if one cannot be determined
+            // from the submission events.
+            toStatus = SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, submission.getSubmissionStatus());
                         
         } else {
 

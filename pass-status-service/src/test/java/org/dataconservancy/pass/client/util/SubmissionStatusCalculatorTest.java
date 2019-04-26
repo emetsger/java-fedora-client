@@ -19,6 +19,7 @@ import java.net.URI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -37,6 +38,7 @@ import static org.dataconservancy.pass.model.Submission.SubmissionStatus.APPROVA
 import static org.dataconservancy.pass.model.Submission.SubmissionStatus.CANCELLED;
 import static org.dataconservancy.pass.model.Submission.SubmissionStatus.CHANGES_REQUESTED;
 import static org.dataconservancy.pass.model.Submission.SubmissionStatus.COMPLETE;
+import static org.dataconservancy.pass.model.Submission.SubmissionStatus.DRAFT;
 import static org.dataconservancy.pass.model.Submission.SubmissionStatus.MANUSCRIPT_REQUIRED;
 import static org.dataconservancy.pass.model.Submission.SubmissionStatus.NEEDS_ATTENTION;
 import static org.dataconservancy.pass.model.Submission.SubmissionStatus.SUBMITTED;
@@ -319,10 +321,21 @@ public class SubmissionStatusCalculatorTest extends SubmissionStatusTestBase  {
      */
     @Test
     public void testPreSubmissionStatusManuscriptExpected() {
-        assertEquals(MANUSCRIPT_REQUIRED, SubmissionStatusCalculator.calculatePreSubmissionStatus(null));
-        assertEquals(MANUSCRIPT_REQUIRED, SubmissionStatusCalculator.calculatePreSubmissionStatus(new ArrayList<SubmissionEvent>()));        
+        assertEquals(MANUSCRIPT_REQUIRED, SubmissionStatusCalculator.calculatePreSubmissionStatus(null, null));
+        assertEquals(MANUSCRIPT_REQUIRED, SubmissionStatusCalculator.calculatePreSubmissionStatus(new ArrayList<SubmissionEvent>(), null));
+        assertEquals(MANUSCRIPT_REQUIRED, SubmissionStatusCalculator.calculatePreSubmissionStatus(null, MANUSCRIPT_REQUIRED));
+        assertEquals(MANUSCRIPT_REQUIRED, SubmissionStatusCalculator.calculatePreSubmissionStatus(Collections.emptyList(), MANUSCRIPT_REQUIRED));
     }
-    
+
+    @Test
+    public void testPreSubmissionStatusDraftExpected() {
+        assertEquals(DRAFT, SubmissionStatusCalculator.calculatePreSubmissionStatus(null, DRAFT));
+
+        // in fact, the logic inside the calculator will default to supplied status if there are no submission events
+        // provided, rather than hard-coding a return.
+        assertEquals(SUBMITTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(null, SUBMITTED));
+    }
+
     /**
      * Tests various scenarios where outcome should be APPROVAL_REQUESTED
      */
@@ -330,17 +343,19 @@ public class SubmissionStatusCalculatorTest extends SubmissionStatusTestBase  {
     public void testPreSubmissionStatusApprovalRequested() {
         List<SubmissionEvent> submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED));
-        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents)); 
+        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
 
         submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED_NEWUSER));
-        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents)); 
+        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
         
         submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED_NEWUSER),
                               submissionEvent(new DateTime(2018, 2, 2, 12, 0, 0, 0), EventType.CHANGES_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 3, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED));
-        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents));         
+        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
+
+        assertEquals(APPROVAL_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, DRAFT));
     }
     
 
@@ -351,19 +366,21 @@ public class SubmissionStatusCalculatorTest extends SubmissionStatusTestBase  {
     public void testPreSubmissionStatusChangesRequested() {
         List<SubmissionEvent> submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.CHANGES_REQUESTED));
-        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents)); 
+        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
         
         submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 2, 12, 0, 0, 0), EventType.CHANGES_REQUESTED));
-        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents));    
+        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
         
         submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 1, 12, 2, 0, 0), EventType.CHANGES_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 1, 12, 2, 3, 0), EventType.APPROVAL_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 1, 12, 2, 3, 1), EventType.CHANGES_REQUESTED));
-        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents));          
+        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
+
+        assertEquals(CHANGES_REQUESTED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, DRAFT));
     }
     
 
@@ -374,19 +391,21 @@ public class SubmissionStatusCalculatorTest extends SubmissionStatusTestBase  {
     public void testPreSubmissionStatusCancelled() {
         List<SubmissionEvent> submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.CANCELLED));
-        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents)); 
+        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
         
         submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 0, 0, 0), EventType.APPROVAL_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 2, 12, 0, 0, 0), EventType.CANCELLED));
-        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents));    
+        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
         
         submissionEvents = 
                 Arrays.asList(submissionEvent(new DateTime(2018, 2, 1, 12, 1, 0, 0), EventType.APPROVAL_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 1, 12, 2, 0, 0), EventType.CHANGES_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 1, 12, 3, 3, 0), EventType.APPROVAL_REQUESTED),
                               submissionEvent(new DateTime(2018, 2, 1, 12, 4, 3, 1), EventType.CANCELLED));
-        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents));          
+        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, null));
+
+        assertEquals(CANCELLED, SubmissionStatusCalculator.calculatePreSubmissionStatus(submissionEvents, DRAFT));
     }
     
     /**
@@ -400,12 +419,19 @@ public class SubmissionStatusCalculatorTest extends SubmissionStatusTestBase  {
         SubmissionStatusCalculator.validateStatusChange(false, APPROVAL_REQUESTED, CHANGES_REQUESTED);
         SubmissionStatusCalculator.validateStatusChange(false, CHANGES_REQUESTED, APPROVAL_REQUESTED);
         SubmissionStatusCalculator.validateStatusChange(false, CHANGES_REQUESTED, CANCELLED);
+
+        SubmissionStatusCalculator.validateStatusChange(false, DRAFT, APPROVAL_REQUESTED);
+        SubmissionStatusCalculator.validateStatusChange(false, DRAFT, CHANGES_REQUESTED);
+        SubmissionStatusCalculator.validateStatusChange(false, DRAFT, CANCELLED);
+
         SubmissionStatusCalculator.validateStatusChange(true, APPROVAL_REQUESTED, SUBMITTED);
         SubmissionStatusCalculator.validateStatusChange(true, MANUSCRIPT_REQUIRED, SUBMITTED);
         SubmissionStatusCalculator.validateStatusChange(true, SUBMITTED, COMPLETE);
         SubmissionStatusCalculator.validateStatusChange(true, SUBMITTED, NEEDS_ATTENTION);
         SubmissionStatusCalculator.validateStatusChange(true, NEEDS_ATTENTION, SUBMITTED);
-        SubmissionStatusCalculator.validateStatusChange(true, NEEDS_ATTENTION, COMPLETE);        
+        SubmissionStatusCalculator.validateStatusChange(true, NEEDS_ATTENTION, COMPLETE);
+        SubmissionStatusCalculator.validateStatusChange(true, DRAFT, SUBMITTED);
+        SubmissionStatusCalculator.validateStatusChange(true, DRAFT, COMPLETE);
     }
     
     /**

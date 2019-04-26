@@ -77,17 +77,25 @@ public class SubmissionStatusCalculator  {
         return calculateFromStatusMap(statusMap);        
     }
 
-    
     /**
      * Calculates the appropriate pre-Submission status based on data provided. 
      * <p>
      * Pre-Submission calculations use the {@code SubmissionEvents} associated with the {@link Submission} 
-     * to determine the status of a Submission before it has been submitted ({@code Submission.status=false}.
+     * to determine the status of a Submission before it has been submitted ({@code Submission.submitted=false}).
+     * </p>
+     * <p>
+     * If a default status is provided, it will be returned <em>only if</em> a status cannot be determined from the
+     * submission events. If no default status is provided, <em>and</em> a status cannot be determined from the
+     * submission events, then this method returns {@code MANUSCRIPT_REQUIRED} in order to maintain backwards
+     * compatibility.
      * </p>
      * @param submissionEvents List of submission events
-     * @return Calculated submission status
+     * @param defaultStatus the the status to be returned if no status can be determined from the submission events, may
+     *                      be {@code null}
+     * @return calculated submission status, or the default status if one cannot be calculated from the events
      */
-    public static SubmissionStatus calculatePreSubmissionStatus(List<SubmissionEvent> submissionEvents) {
+    public static SubmissionStatus calculatePreSubmissionStatus(List<SubmissionEvent> submissionEvents,
+                                                                SubmissionStatus defaultStatus) {
     if (submissionEvents==null) {submissionEvents = new ArrayList<SubmissionEvent>();}
         if (submissionEvents.size()>0) {
             // should only be used to set a status if the status is starting as null since UI is best for setting status, 
@@ -100,8 +108,12 @@ public class SubmissionStatusCalculator  {
             
             
         } else {
-            // has not yet been acted on, must be awaiting manuscript
-            return MANUSCRIPT_REQUIRED;
+            // has not yet been acted on; may be awaiting a manuscript, or the UI may have set the status.
+            if (defaultStatus == null) {
+                return MANUSCRIPT_REQUIRED;
+            }
+
+            return defaultStatus;
         }
     }
     
