@@ -433,9 +433,8 @@
     </repository>
 
     <snapshotRepository>
-      <id>dc.public.snapshots</id>
-      <name>Data Conservancy Snapshot Maven Repository</name>
-      <url>scp://maven.dataconservancy.org:${scp.port}/data/maven-dc/public/snapshots/</url>
+      <id>maven-central-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
 
@@ -451,18 +450,6 @@
       <releases>
         <enabled>false</enabled>
       </releases>
-    </repository>
-    <repository>
-      <id>dc.public.snapshots</id>
-      <name>Data Conservancy Public Maven Repository (snapshots)</name>
-      <layout>default</layout>
-      <url>http://maven.dataconservancy.org/public/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
     </repository>
   </repositories>
 
