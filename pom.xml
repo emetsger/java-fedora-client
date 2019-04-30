@@ -72,18 +72,6 @@
   <profiles>
 
     <profile>
-      <id>external</id>
-      <activation>
-        <property>
-          <name>external</name>
-        </property>
-      </activation>
-      <properties>
-        <scp.port>122</scp.port>
-      </properties>
-    </profile>
-
-    <profile>
       <id>release</id>
       <build>
         <pluginManagement>
@@ -118,7 +106,6 @@
   </profiles>
 
   <properties>
-    <scp.port>22</scp.port>
 
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <docker-maven-plugin.version>0.27.2</docker-maven-plugin.version>
@@ -433,9 +420,8 @@
     </repository>
 
     <snapshotRepository>
-      <id>dc.public.snapshots</id>
-      <name>Data Conservancy Snapshot Maven Repository</name>
-      <url>scp://maven.dataconservancy.org:${scp.port}/data/maven-dc/public/snapshots/</url>
+      <id>oss.snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
 
@@ -443,7 +429,7 @@
 
   <repositories>
     <repository>
-      <id>oss</id>
+      <id>oss.snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <snapshots>
         <enabled>true</enabled>
