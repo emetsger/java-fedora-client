@@ -179,6 +179,7 @@
           <systemProperties>
             <pass.fedora.baseurl>http://${FCREPO_HOST}:${FCREPO_PORT}/fcrepo/rest/</pass.fedora.baseurl>
             <pass.elasticsearch.url>http://${ES_HOST}:${ES_PORT}</pass.elasticsearch.url>
+            <pass.jsonld.context>https://raw.githubusercontent.com/emetsger/pass-data-model/affiliation-fix/src/main/resources/context-3.5.jsonld</pass.jsonld.context>
           </systemProperties>
           <trimStackTrace>false</trimStackTrace>
         </configuration>

@@ -17,8 +17,10 @@ package org.dataconservancy.pass.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -59,12 +61,12 @@ public class User extends PassEntity {
      * Contact email for User
      */
     private String email;
-    
-    /** 
-     * Affiliation string for person. Where Person is embedded in Submission or Grant, 
-     * this is the affiliation relevant to that item 
+
+    /**
+     * Affiliation string for person. Where Person is embedded in Submission or Grant,
+     * this is the affiliation relevant to that item
      */
-    private String affiliation; 
+    private Set<String> affiliation = new HashSet<>();
     
     /** 
      * A list of ids associated with the user by various system that PASS interacts with. 
@@ -103,7 +105,7 @@ public class User extends PassEntity {
         this.lastName = user.lastName;
         this.displayName = user.displayName;
         this.email = user.email;
-        this.affiliation = user.affiliation;
+        this.affiliation = new HashSet<>(user.affiliation);
         this.locatorIds = new ArrayList<String>(user.locatorIds);
         this.orcidId = user.orcidId;
         this.roles = new ArrayList<Role>(user.roles);
@@ -251,7 +253,7 @@ public class User extends PassEntity {
     /**
      * @return the affiliation
      */
-    public String getAffiliation() {
+    public Set<String> getAffiliation() {
         return affiliation;
     }
 
@@ -259,7 +261,7 @@ public class User extends PassEntity {
     /**
      * @param affiliation the affiliation to set
      */
-    public void setAffiliation(String affiliation) {
+    public void setAffiliation(Set<String> affiliation) {
         this.affiliation = affiliation;
     }
 

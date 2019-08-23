@@ -18,6 +18,7 @@ package org.dataconservancy.pass.client.integration;
 import java.net.URI;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class FindAllByAttributesIT extends ClientITBase {
         user.setFirstName("Mary-Ann");
         user.setLastName("Schäfer");
         user.setDisplayName("Mary \"The Shark\" Schäfer");
-        user.setAffiliation("Lamar & Schäfer Laboratory, Nürnberg");
+        user.setAffiliation(Collections.singleton("Lamar & Schäfer Laboratory, Nürnberg"));
         URI userId1 = client.createResource(user);
         createdUris.put(userId1, User.class);  
         URI userId2 = client.createResource(user);
@@ -83,8 +84,8 @@ public class FindAllByAttributesIT extends ClientITBase {
         map.put("firstName", user.getFirstName());
         map.put("lastName", user.getLastName());
         map.put("displayName", user.getDisplayName());
-        map.put("affiliation", user.getAffiliation());
-                    
+        map.put("affiliation", user.getAffiliation().iterator().next());
+
         Set<URI> uris = client.findAllByAttributes(User.class, map);
         assertEquals(2, uris.size());
         assertTrue(uris.contains(userId1));

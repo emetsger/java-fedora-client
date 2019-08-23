@@ -18,6 +18,7 @@ package org.dataconservancy.pass.client.integration;
 import java.net.URI;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Rule;
@@ -80,7 +81,7 @@ public class FindByAttributeIT extends ClientITBase {
         user.setFirstName("Mary-Ann");
         user.setLastName("Schäfer");
         user.setDisplayName("Mary \"The Shark\" Schäfer");
-        user.setAffiliation("Lamar & Schäfer Laboratory, Nürnberg");
+        user.setAffiliation(Collections.singleton("Lamar & Schäfer Laboratory, Nürnberg"));
         URI userId = client.createResource(user);
         createdUris.put(userId, User.class);
         
@@ -98,7 +99,7 @@ public class FindByAttributeIT extends ClientITBase {
         URI uri3 = client.findByAttribute(User.class, "displayName", user.getDisplayName());
         assertEquals(userId, uri3);
 
-        URI uri4 = client.findByAttribute(User.class, "affiliation", user.getAffiliation());
+        URI uri4 = client.findByAttribute(User.class, "affiliation", user.getAffiliation().iterator().next());
         assertEquals(userId, uri4);
         
     }

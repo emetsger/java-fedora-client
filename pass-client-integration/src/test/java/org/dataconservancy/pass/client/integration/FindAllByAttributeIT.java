@@ -17,6 +17,7 @@ package org.dataconservancy.pass.client.integration;
 
 import java.net.URI;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public class FindAllByAttributeIT extends ClientITBase {
         user.setFirstName("Mary-Ann");
         user.setLastName("Schäfer");
         user.setDisplayName("Mary \"The Shark\" Schäfer");
-        user.setAffiliation("Lamar & Schäfer Laboratory, Nürnberg");
+        user.setAffiliation(Collections.singleton("Lamar & Schäfer Laboratory, Nürnberg"));
         URI userId1 = client.createResource(user);
         createdUris.put(userId1, User.class);  
         URI userId2 = client.createResource(user);
@@ -81,7 +82,7 @@ public class FindAllByAttributeIT extends ClientITBase {
         assertTrue(uris.contains(userId1));
         assertTrue(uris.contains(userId2));
         
-        uris = client.findAllByAttribute(User.class, "affiliation", user.getAffiliation());
+        uris = client.findAllByAttribute(User.class, "affiliation", user.getAffiliation().iterator().next());
         assertEquals(2, uris.size());
         assertTrue(uris.contains(userId1));
         assertTrue(uris.contains(userId2));

@@ -16,6 +16,9 @@
 
 package org.dataconservancy.pass.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Constants used in test data
  *
@@ -299,7 +302,9 @@ public class TestValues {
     public static final String USER_ORCID_ID = "https://orcid.org/0000-1111-2222-3333";
 
     /** A test value */
-    public static final String USER_AFFILIATION = "Johns Hopkins University";
+    public static final Set<String> USER_AFFILIATION = new HashSet<String>() {{
+        add("Johns Hopkins University");
+    }};
 
     /** A test value */
     public static final String USER_ROLE_1 = "admin";

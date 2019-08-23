@@ -82,7 +82,7 @@ public class ContributorModelTests {
         assertEquals(root.getString("displayName"),TestValues.USER_DISPLAY_NAME);
         assertEquals(root.getString("email"),TestValues.USER_EMAIL);            
         assertEquals(root.getString("orcidId"),TestValues.USER_ORCID_ID);                
-        assertEquals(root.getString("affiliation"),TestValues.USER_AFFILIATION);         
+        assertEquals(root.getJSONArray("affiliation").get(0),TestValues.USER_AFFILIATION.iterator().next());
     }
     
     /**

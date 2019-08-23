@@ -87,7 +87,7 @@ public class UserModelTest {
         assertEquals(root.getString("lastName"),TestValues.USER_LAST_NAME);
         assertEquals(root.getString("displayName"),TestValues.USER_DISPLAY_NAME);
         assertEquals(root.getString("email"),TestValues.USER_EMAIL);        
-        assertEquals(root.getString("affiliation"),TestValues.USER_AFFILIATION);         
+        assertEquals(root.getJSONArray("affiliation").get(0),TestValues.USER_AFFILIATION.iterator().next());
         assertEquals(root.getJSONArray("locatorIds").get(0),TestValues.USER_LOCATORID1);
         assertEquals(root.getJSONArray("locatorIds").get(1),TestValues.USER_LOCATORID2);   
         assertEquals(root.getString("orcidId"),TestValues.USER_ORCID_ID);              

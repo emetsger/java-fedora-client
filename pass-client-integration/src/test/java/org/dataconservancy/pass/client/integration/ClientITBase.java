@@ -23,9 +23,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -219,6 +221,8 @@ public abstract class ClientITBase {
                         m.invoke(entity, createList(m, sizeOfLists));
                     } else if (Boolean.class.isAssignableFrom(type)) {
                         m.invoke(entity, true);
+                    } else if (Set.class.isAssignableFrom(type)) {
+                        m.invoke(entity, createSet(m, sizeOfLists));
                     } else {
                         throw new UnsupportedOperationException(type.getName());
                     }
@@ -255,6 +259,15 @@ public abstract class ClientITBase {
         }
 
         return list;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Set<?> createSet(Method method, int size) throws Exception {
+        final Set set = new HashSet<>();
+        for (int i = 0; i < size; i++) {
+            set.add(UUID.randomUUID().toString());
+        }
+        return set;
     }
 
     /**

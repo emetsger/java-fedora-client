@@ -80,6 +80,9 @@ public class CreateFindByRoundTripIT extends ClientITBase {
                     if (List.class.isAssignableFrom(type)) {
                         List listval = (List) m.invoke(forDeposit);
                         val = listval.get(0);
+                    } else if (Set.class.isAssignableFrom(type)) {
+                        Set setval = (Set) m.invoke(forDeposit);
+                        val = setval.iterator().next();
                     } else {
                         val = m.invoke(forDeposit);
                     } 

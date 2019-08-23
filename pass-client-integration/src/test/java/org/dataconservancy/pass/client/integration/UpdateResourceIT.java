@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -142,7 +143,7 @@ public class UpdateResourceIT extends ClientITBase {
         //verify User record does not have original fields, they have been completely overwritten with the partial model
         User updatedUser = overwriteOnUpdateClient.readResource(userId, User.class);
         assertEquals(userId, updatedUser.getId());
-        assertEquals(null, updatedUser.getAffiliation());
+        assertEquals(Collections.emptySet(), updatedUser.getAffiliation());
         assertEquals(null, updatedUser.getFirstName());
         assertEquals(null, updatedUser.getLastName());
         assertEquals(incompleteUser.getDisplayName(), updatedUser.getDisplayName());

@@ -8,7 +8,7 @@
 	"email": "js@example.com",
 	"institutionalId": "jms001",
 	"orcidId": "https://orcid.org/0000-1111-2222-3333",
-	"affiliation": "Johns Hopkins University",
+	"affiliation": [ "Johns Hopkins University" ],
 	"roles": ["first-author","author"],
 	"publication": "https://example.org/fedora/publications/1",
 	"user": "https://example.org/fedora/users/1"
